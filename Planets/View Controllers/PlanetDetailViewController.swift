@@ -36,3 +36,32 @@ class PlanetDetailViewController: UIViewController {
         label.text = planet.name
     }
 }
+
+//save and reload our planet object from our property list
+extension PlanetDetailViewController {
+    
+    override func encodeRestorableState(with coder: NSCoder) {
+        defer {super.encodeRestorableState(with: coder)}
+        
+        //planet -> data -> encode in coder
+        
+        var planetData: Data?
+        
+        do {
+            planetData = try PropertyListEncoder().encode(planet)
+        } catch {
+            NSLog("Error encoding planet:\(error)")
+        }
+        guard let planet = planetData else {return}
+        coder.encode(planet, forKey: "planetData")
+    }
+    
+    
+    override func decodeRestorableState(with coder: NSCoder) {
+        defer {super.decodeRestorableState(with: coder)}
+        
+        //data -> planet -> put in var planet
+        guard let planetData = coder.decodeObject(forKey: "planetData") as? Data else {return}
+        self.planet = try? PropertyListDecoder().decode(Planet.self, from: planetData)
+    }
+}

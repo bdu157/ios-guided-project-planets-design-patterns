@@ -8,6 +8,11 @@
 
 import UIKit
 
+extension Notification.Name {
+    static var switchWasFlipped = Notification.Name("switchWasFlipped")
+}
+
+//this would be poster - notification
 class SettingsViewController: UIViewController {
 
     @IBOutlet weak var shouldShowPlutoSwitch: UISwitch!
@@ -25,5 +30,7 @@ class SettingsViewController: UIViewController {
     @IBAction func changeShouldShowPluto(_ sender: UISwitch) {
         let userDefaults = UserDefaults.standard
         userDefaults.set(sender.isOn, forKey: .shouldShowPlutoKey)
+        //the way that we post notification - invisible signal between viewcontrollers
+        NotificationCenter.default.post(name: .switchWasFlipped, object: self)
     }
 }
